@@ -23,10 +23,7 @@ int myCompare(string X, string Y)
     return XY.compare(YX) > 0 ? 1: 0;
 }
 string Solution::largestNumber(const vector<int> &A) {
-    // Do not write main() function.
-    // Do not read input, instead use the arguments to the function.
-    // Do not print the output, instead return values as specified
-    // Still have a doubt. Checkout www.interviewbit.com/pages/sample_codes/ for more details
+    
     vector<string> b;
     for(int i=0;i<A.size();i++){
         b.push_back(to_string(A[i]));
