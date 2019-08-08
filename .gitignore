@@ -1,7 +1,1 @@
-*
-
-!.gitignore
-
-!./
-
-!*.cpp
+input.txt
