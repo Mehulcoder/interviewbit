@@ -30,15 +30,26 @@ You may also assume that the difference will not overflow.
 
 http://www.stokastik.in/leetcode-maximum-gap/
 
-This problem has a naive solution using sort and linear scan. The suggested solution uses the idea of bucket sort. The following is a C++ implementation of the suggested solution.
+This problem has a naive solution using sort and linear scan. The suggested solution uses the idea of bucket sort. 
+The following is a C++ implementation of the suggested solution.
 
-Suppose all the n elements in nums fall within [l, u], the maximum gap will not be smaller than gap = (u - l) / (n - 1). However, this gap may become 0 and so we take the maximum of it with 1 to guarantee that the gap used to create the buckets is meaningful.
+Suppose all the n elements in nums fall within [l, u], the maximum gap will not be smaller
+ than gap = (u - l) / (n - 1).However, this gap may become 0 and so we take the maximum of it 
+ with 1 to guarantee that the gap used to create the buckets 
+ is meaningful.
 
-Then there will be at most m = (u - l) / gap + 1 buckets. For each number num, it will fall in the k = (num - l) / gap bucket. After putting all elements of nums in the corresponding buckets, we can just scan the buckets to compute the maximum gap.
+Then there will be at most m = (u - l) / gap + 1 buckets. For each number num, it will fall in
+ the k = (num - l) / gap bucket. After putting all elements of nums in the corresponding buckets,
+  we can just scan the buckets to compute
+  the maximum gap.
 
-The maximum gap is only dependent on the maximum number of the current bucket and the minimum number of the next neighboring bucket (the bucket should not be empty). So we only store the minimum and the maximum of each bucket. Each bucket is initialized as {minimum = INT_MAX, maximum = INT_MIN} and then updated while updating the buckets.
+The maximum gap is only dependent on the maximum number of the current bucket and the minimum number of the
+ next neighboring bucket (the bucket should not be empty). So we only store the minimum and the maximum of
+  each bucket. Each bucket is initialized as {minimum = INT_MAX, maximum = INT_MIN} and then updated while 
+  updating the buckets.
 
-Putting these together, we can have the following solution, barely a straight-forward implementation of the suggested solution.
+Putting these together, we can have the following solution, barely a straight-forward implementation of the 
+suggested solution.
 
 */
 #include <bits/stdc++.h>
