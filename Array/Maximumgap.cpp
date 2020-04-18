@@ -52,33 +52,47 @@ Putting these together, we can have the following solution, barely a straight-fo
 suggested solution.
 
 */
+
+/*
+
+1) Let's say that the minimum is min, and maximum is max. Also say that total number of elements is n.
+2) Then we can say that the maximum gap b/w elements is surely not less than the decimal value of mindiff = (max-min)/(n-1).
+3) Let's start from "min" to understand the process. Put all the elements b/w min and min+mindiff in one bucket and keep track of maximum element and minimum element in that bucket.Why?
+    -> Because of statement 1, say if we choose left as "min", for our ans, right is obviously >= min+mindiff
+    -> Why maximum and minimum need to be stored? As we are looking for differeces between elements when they are
+    sorted. Therefore only candidates are max from left bucket and min from right bucket(Alternate in sorted array)
+    -> No need to check bucket ke andar ke diff because answer usse bada hi aaega,
+3) Just like ["min" to "min+mindiff") make buckets [min+mindiff to min+2*mindiff]........
+
+*/
+
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int Solution::int maximumGap(vector<int>& nums) {
-        int n = nums.size();
-        if (n < 2) return 0;
-        auto lu = minmax_element(nums.begin(), nums.end());
-        int l = *lu.first, u = *lu.second;
-        int gap = max((u - l) / (n - 1), 1);
-        int m = (u - l) / gap + 1;
-        vector<int> bucketsMin(m, INT_MAX);
-        vector<int> bucketsMax(m, INT_MIN);
-        for (int num : nums) {
-            int k = (num - l) / gap;
-            if (num < bucketsMin[k]) bucketsMin[k] = num;
-            if (num > bucketsMax[k]) bucketsMax[k] = num;
-        }
-        int i = 0, j; 
-        gap = bucketsMax[0] - bucketsMin[0];
-        while (i < m) {
-            j = i + 1;
-            while (j < m && bucketsMin[j] == INT_MAX && bucketsMax[j] == INT_MIN)
-                j++;
-            if (j == m) break;
-            gap = max(gap, bucketsMin[j] - bucketsMax[i]);
-            i = j;
-        }
-        return gap;
+    int n = nums.size();
+    if (n < 2) return 0;
+    auto lu = minmax_element(nums.begin(), nums.end());
+    int l = *lu.first, u = *lu.second;
+    int gap = max((u - l) / (n - 1), 1);
+    int m = (u - l) / gap + 1;
+    vector<int> bucketsMin(m, INT_MAX);
+    vector<int> bucketsMax(m, INT_MIN);
+    for (int num : nums) {
+        int k = (num - l) / gap;
+        if (num < bucketsMin[k]) bucketsMin[k] = num;
+        if (num > bucketsMax[k]) bucketsMax[k] = num;
     }
+    int i = 0, j; 
+    gap = bucketsMax[0] - bucketsMin[0];
+    while (i < m) {
+        j = i + 1;
+        while (j < m && bucketsMin[j] == INT_MAX && bucketsMax[j] == INT_MIN)
+            j++;
+        if (j == m) break;
+        gap = max(gap, bucketsMin[j] - bucketsMax[i]);
+        i = j;
+    }
+    return gap;
+}
