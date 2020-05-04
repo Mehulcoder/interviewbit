@@ -1,3 +1,7 @@
+#define pb push_back
+
+vector< vector<string> > output;
+
 bool IsPalindrome(string &s){
     int n = s.length();
     for(int i = 0; i <= n/2; i++){
@@ -7,17 +11,32 @@ bool IsPalindrome(string &s){
     return true;
 }
 
-void helper(vector<string> A, int start, vector<string> temp, vector<vector<string>> ans){
-	
+void MakePartitions(int id, string s, string &A, vector<string> &helper){
+    if(id >= A.length()){
+        if(IsPalindrome(s)){
+            helper.pb(s);
+            output.pb(helper);
+            helper.pop_back();
+        }
+        return;
+    }
+    
+    if(IsPalindrome(s)){
+        helper.pb(s);
+        string temp = "";
+        temp += A[id];
+        MakePartitions(id+1, temp, A, helper);
+        helper.pop_back();
+    }
+    
+    MakePartitions(id+1, s+A[id], A, helper);
 }
 
 vector<vector<string> > Solution::partition(string A) {
-	// string temp;
-	vector<string> temp;
-	vector<vector<int>> ans;
-
-	helper(A, -1, temp, ans);
-
-	return ans;
-
+    output.clear();
+    vector<string> helper;
+    string s = "";
+    s += A[0];
+    MakePartitions(1, s, A, helper);
+    return output;
 }
