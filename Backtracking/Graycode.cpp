@@ -48,7 +48,6 @@ vector<int> Solution::grayCode(int A) {
 
 	vector<string> binary = helper(A);
 
-
 	vector<int> ans = convert(binary);
 
 	return ans;
