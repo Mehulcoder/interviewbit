@@ -8,20 +8,16 @@
  * };
  */
 int isEqual(TreeNode* A, TreeNode* B){
-	if (A==NULL && B==NULL)
+	if (!A&& !B)
 	{
 		return 1;
 	}
 
-	if (A==NULL && B!=NULL)
+	if (!A ||  !B)
 	{
 		return 0;
 	}
-	if (A!=NULL && B==NULL)
-	{
-		return 0;
-	}
-
+	
 	if (A->val != B->val)
 	{
 		return 0;
@@ -35,23 +31,8 @@ int Solution::isSymmetric(TreeNode* A) {
 	{
 		return 1;
 	}
-	if (A->left==NULL && A->right ==NULL)
-	{
-		return 1;
-	}
-	if (A->left!=NULL && A->right==NULL)
-	{
-		return 0;
-	}
-	if (A->left==NULL && A->right!=NULL)
-	{
-		return 0;
-	}
-	if (A->left->val != A->right->val)
-	{
-		return 0;
-	}
 
-	return isEqual(A->left,A->right);
+
+	return isEqual(A,A);
 
 }
