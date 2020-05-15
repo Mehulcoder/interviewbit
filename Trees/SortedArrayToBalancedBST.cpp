@@ -23,7 +23,6 @@ A height balanced BST  :
    1     3
 
 
-*/
 /**
  * Definition for binary tree
  * struct TreeNode {
@@ -33,28 +32,23 @@ A height balanced BST  :
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-
-#include <bits/stdc++.h>
-
-using namespace std;
-
-TreeNode* helper(const vector<int> &A, int i, int j){
-	if(i==j){
-		return new TreeNode(A.at(i));
+TreeNode* helper(const vector<int> &A, int left, int right){
+	if (left>right)
+	{
+		return NULL;
 	}
-
-	int mid = i+(j-i)/2;
-
-	TreeNode* root =new TreeNode(A.at(mid));
-	root->left  = helper(A, i, mid-1);
-	root->right = helper(A, mid+1, j);
-
-	return root;
-
+	if (left==right)
+	{
+		return new TreeNode(A[left]);
+	}
+	int mid = left+(right-left)/2;
+	TreeNode* head = new TreeNode(A[mid]);
+	head->left = helper(A, left, mid-1);
+	head->right = helper(A, mid+1, right);
+	
+	return head;
 }
 
-
 TreeNode* Solution::sortedArrayToBST(const vector<int> &A) {
-	return helper(A, 0, A.size()-1);  
-
+	return helper(A, 0, A.size()-1);
 }
