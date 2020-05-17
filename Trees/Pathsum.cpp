@@ -27,20 +27,6 @@ Return 0 / 1 ( 0 for false, 1 for true ) for this problem
 
 */
 
-#include <bits/stdc++.h>
-
-using namespace std;
-
-
-
-
-  struct TreeNode {
-      int val;
-      TreeNode *left;
-      TreeNode *right;
-      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-  };
- 
 int Solution::hasPathSum(TreeNode* root, int B) {
 	 if (root==NULL)
     {
