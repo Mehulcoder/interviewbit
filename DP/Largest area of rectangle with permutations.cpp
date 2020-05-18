@@ -15,7 +15,7 @@ int Solution::solve(vector<vector<int> > &A) {
         }
     }
 
-    //Sort by max value of each column
+    //Sort by max value of each column row by row
     int ans = INT_MIN;
     for (int i = 0; i < A.size(); ++i)
     {
