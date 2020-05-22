@@ -49,19 +49,39 @@ typedef unordered_set<int> useti;
 #define frr(i, a, b) for (int i = (a), _b = (b); i >= _b; i--)
 #define trav(a, x) for(auto& a : x)
 #define fil(ar, val) memset(ar, val, sizeof(ar))  // 0x3f for inf, 0x80 for -INF can also use with pairs
+#define error(args...) { string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); stringstream _ss(_s); istream_iterator<string> _it(_ss); err(_it, args); }
+
+void err(istream_iterator<string> it) {}
+template<typename T, typename... Args>
+void err(istream_iterator<string> it, T a, Args... args) {
+	cerr << *it << " = " << a << endl;
+	err(++it, args...);
+}
 
 int solver(vector<int>A)
 {
-	unordered_map<int, int> pre;
-	int sum = 0;
-	int count = 0;
-	rep(i, A.size()){
-		sum+=A[i];
-		count+=pre[-1*A[i]];
-		pre[sum]++;
-	}
+	int n = A.size();
 
-	return count;
+    unordered_map<int, int> prevSum;
+	int res = 0; 
+    int currsum = 0; 
+  
+	for (int i = 0; i < n; i++) { 
+  
+        // Add current element to sum so far. 
+        currsum += A[i]; 
+
+        if (currsum == 0)  
+            res++;         
+
+        if (prevSum.find(currsum) !=  prevSum.end())  
+            res += (prevSum[currsum]); 
+
+        prevSum[currsum]++; 
+    } 
+
+    return res; 
+    
 }
 
 int Solution::solve(vector<vector<int> > &A) {
@@ -78,24 +98,18 @@ int Solution::solve(vector<vector<int> > &A) {
 	
 	fr(i, 1, n-1){
 		rep(j, m){
-			dp[i][j]+=dp[i-1][j];
+			dp[i][j]=A[i][j]+dp[i-1][j];
 		}
 	}
-
-	// rep(i, n){
-	// 	rep(j,m){
-	// 		cout << dp[i][j] << " \n"[j==m-1];
-	// 	}
-	// }
 
 	rep(i, n){
 		fr(j, i, n-1){
 			vector<int> helper(m, 0);
 			rep(k, m){
-				helper[k]+=A[j][k];
+				helper[k]+=dp[j][k];
 				if (i-1>=0)
 				{
-					helper[k]-=A[i-1][k]
+					helper[k]-=dp[i-1][k];
 				}
 			}
 			count+=solver(helper);
