@@ -50,28 +50,35 @@ typedef unordered_set<int> useti;
 #define trav(a, x) for(auto& a : x)
 #define fil(ar, val) memset(ar, val, sizeof(ar))  // 0x3f for inf, 0x80 for -INF can also use with pairs
 
+int solver(vector<int>A)
+{
+	unordered_map<int, int> pre;
+	int sum = 0;
+	int count = 0;
+	rep(i, A.size()){
+		sum+=A[i];
+		count+=pre[-1*A[i]];
+		pre[sum]++;
+	}
+
+	return count;
+}
+
 int Solution::solve(vector<vector<int> > &A) {
-	vector<vector<int>> dp = A;
 	int n = A.size();
 	if (n==0) return 0;
 	int m = A[0].size();
 	if(m==0)return 0;
 	int count = 0;
+	vector<vector<int>> dp(n, vector<int>(m, 0));
 
-	unordered_map<int, int> pre;
-	fr(i, 1, n-1){
-		dp[i][0] += dp[i-1][0]; 
-		pre[dp[i][0]]++;
+	rep(j, m){
+		dp[0][j] = A[0][j];
 	}
-	fr(i, 1, m-1){
-		dp[0][i] += dp[0][i-1];
-		pre[dp[0][i]]++;
-	}
-
+	
 	fr(i, 1, n-1){
-		fr(j, 1, m-1){
-			dp[i][j] += dp[i-1][j]+dp[i][j-1]-dp[i-1][j-1];
-			pre[dp[i][j]]++
+		rep(j, m){
+			dp[i][j]+=dp[i-1][j];
 		}
 	}
 
@@ -82,30 +89,19 @@ int Solution::solve(vector<vector<int> > &A) {
 	// }
 
 	rep(i, n){
-		rep(j, m){
-			fr(k, i, n-1){
-				fr(l, j, m-1){
-					int sum = dp[k][j];
-					if (i-1>0)
-					{
-						sum-=dp[i-1][l];
-					}
-					if (j-1>0)
-					{
-						sum-=dp[k][j-1];
-					}
-					if (i-1>0 && j-1>0)
-					{
-						sum+=dp[i-1][j-1];
-					}
-					if (sum == 0)
-					{
-						count++;
-					}
+		fr(j, i, n-1){
+			vector<int> helper(m, 0);
+			rep(k, m){
+				helper[k]+=A[j][k];
+				if (i-1>=0)
+				{
+					helper[k]-=A[i-1][k]
 				}
 			}
+			count+=solver(helper);
 		}
 	}
+
 	
 	return count;
 }
