@@ -56,25 +56,56 @@ int Solution::solve(vector<vector<int> > &A) {
 	if (n==0) return 0;
 	int m = A[0].size();
 	if(m==0)return 0;
+	int count = 0;
 
+	unordered_map<int, int> pre;
 	fr(i, 1, n-1){
-		dp[i][0] += dp[i-1][0];
+		dp[i][0] += dp[i-1][0]; 
+		pre[dp[i][0]]++;
 	}
 	fr(i, 1, m-1){
 		dp[0][i] += dp[0][i-1];
+		pre[dp[0][i]]++;
 	}
 
 	fr(i, 1, n-1){
 		fr(j, 1, m-1){
 			dp[i][j] += dp[i-1][j]+dp[i][j-1]-dp[i-1][j-1];
+			pre[dp[i][j]]++
 		}
 	}
 
+	// rep(i, n){
+	// 	rep(j,m){
+	// 		cout << dp[i][j] << " \n"[j==m-1];
+	// 	}
+	// }
+
 	rep(i, n){
-		rep(j,m){
-			cout << dp[i][j] << " \n"[j==m-1];
+		rep(j, m){
+			fr(k, i, n-1){
+				fr(l, j, m-1){
+					int sum = dp[k][j];
+					if (i-1>0)
+					{
+						sum-=dp[i-1][l];
+					}
+					if (j-1>0)
+					{
+						sum-=dp[k][j-1];
+					}
+					if (i-1>0 && j-1>0)
+					{
+						sum+=dp[i-1][j-1];
+					}
+					if (sum == 0)
+					{
+						count++;
+					}
+				}
+			}
 		}
 	}
 	
-	return 0;
+	return count;
 }
