@@ -12,6 +12,10 @@
 
 #include <bits/stdc++.h>
 using namespace std;
+#include <chrono> 
+#ifndef mehul
+#pragma GCC optimize("Ofast")
+#endif
 
 typedef long long ll;
 typedef unordered_map<int, int> umapii;
@@ -49,6 +53,7 @@ typedef unordered_set<int> useti;
 #define trav(a, x) for(auto& a : x)
 #define fil(ar, val) memset(ar, val, sizeof(ar))  // 0x3f for inf, 0x80 for -INF can also use with pairs
 
+#ifdef mehul
 template<typename T>
 void __p(T a) { cout << a << " "; }
 template<typename T>
@@ -78,28 +83,42 @@ void __f(const char *names, Arg1 &&arg1, Args &&... args) {
 	__f(comma+1,args...);
 }
 #define trace(...) cout<<"Line:"<<__LINE__<<" "; __f(#__VA_ARGS__, __VA_ARGS__)
+int begtime = clock();
+#define end_routine() cout << "\n\nTime elapsed: " << (clock() - begtime)*1000/CLOCKS_PER_SEC << " ms\n\n";
+#else
+#define endl '\n'
+#define trace(...)
+#define end_routine()
+#endif
+// 5
+// [1 2 3]
+/*
+
+*/
+int Solution::coinchange2(vector<int> &A, int B) {
+	int* dp = new int[B+1];
+	fill(dp, 0);
+	//dp[i] represents the number of ways I can choose coins to make sum==i
+	int count = 0;
+
+	return helper(A, B, 0);
+}
 
 
 int main( int argc , char ** argv )
 {
 	ios_base::sync_with_stdio(false) ; 
 	cin.tie(NULL) ; 
+	#ifdef mehul
+    freopen("input.txt", "r", stdin);
+	#endif
+
+	//Code Goes here
 	
-	int a = 1;
-	int b = 9;
-	vector<int>v1;
-	frr(i, b, a){
-		v1.push_back(i);
-	}
-
-	trace(v1);
-	
-
-
-
-	return 0 ; 
-
-
-
+	#ifdef mehul
+    end_routine();
+	#endif
+ 
+    return 0 ; 
 }
 
