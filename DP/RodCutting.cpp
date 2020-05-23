@@ -91,12 +91,18 @@ int begtime = clock();
 #define end_routine()
 #endif
 
-int helper(int left, int right, vector<int> &ans, vector<int> arr, bool isCut, vector<vector<int>>&dp, map<pii, vector<int>> &m1){
+int helper(int left, int right, vector<int> &ans, vector<int> arr2, bool isCut, vector<vector<int>>&dp, map<pii, vector<int>> &m1, vector<int> basAbnahi){
+	if (right-left==1)
+	{
+		dp[left][right] = 0;
+		m1[{left, right}] = {};
+		return 0;
+	}
 	if (right<=left)
 	{
 		return 0;
 	}
-	trace(left, right, dp[left][right], m1[{left, right}]);
+	// trace(left, right, dp[left][right], m1[{left, right}]);
 	// if (dp[left][right]!=-1)
 	// {
 	// 	ans = m1[{left, right}];
@@ -105,19 +111,25 @@ int helper(int left, int right, vector<int> &ans, vector<int> arr, bool isCut, v
 	int cost = right-left;
 	int mpc = INT_MAX;
 	pair<vector<int>, int> prev = {ans, mpc};
-	rep(i, arr.size()){
+	rep(i, arr2.size()){
+		int cuttedAt = -1;
+		vector<int> arr = arr2;
 		vector<int> temp = ans;
 		int cl = 0;
 		int cr = 0;
 		if (arr[i]<right && arr[i]>left)
 		{
-			// trace(isCut, left, right);
+			// trace(left, right, arr[i], temp);
+			cuttedAt = arr[i];
 			isCut = 1;
 			temp.push_back(arr[i]);
-			cl = helper(left, arr[i], temp, arr, 0, dp,m1);
-			cr = helper(arr[i], right, temp, arr, 0, dp,m1);
+			arr.erase(arr.begin()+i);
+			cl = helper(left, cuttedAt, temp, arr, 0, dp,m1, basAbnahi);
+			cr = helper(cuttedAt, right, temp, arr, 0, dp,m1, basAbnahi);
 			if (prev.s>cl+cr)
 			{
+				basAbnahi = temp;
+				basAbnahi.erase(basAbnahi.begin());
 				prev.s = cl+cr;
 				prev.f = temp;
 			}
@@ -125,9 +137,12 @@ int helper(int left, int right, vector<int> &ans, vector<int> arr, bool isCut, v
 		}
 
 	}
-
+	trace(left, right, basAbnahi);
 	ans = prev.f;
-	if (!isCut) {dp[left][right] = 0;  return 0;}
+	if (!isCut) {dp[left][right] = 0; m1[{left, right}] = {}; return 0;}
+	dp[left][right] = cost+prev.s;
+	// trace(left, right, ans);
+	m1[{left, right}] = ans;
 	return cost+prev.s;
 }
 
@@ -138,8 +153,12 @@ vector<int> rodCut(int A, vector<int> &B) {
 	vector<int> ans;
 	vector<int> ans2;
 	map<pii, vector<int>> m1;
+	vector<int> basAbnahi;
 	vector<vector<int>>dp(A+1, vector<int> (A+1,-1));
-	helper(left, right, ans, B, 0, dp, m1);
+	helper(left, right, ans, B, 0, dp, m1, basAbnahi);
+	trav(a,m1){
+		trace(a);
+	}
 	return ans;
 
 }
