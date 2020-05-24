@@ -1,230 +1,91 @@
-/*
+class Solution {
+    
+    public:
 
-                Name: Mehul Chaturvedi
-                IIT-Guwahati
+        vector<vector<vector<bool> > > dp;
+        vector<int> res;
+        vector<int> original;
+        int total_size;
 
-*/
+        bool possible(int index, int sum, int sz) {
+            if (sz == 0) return (sum == 0);
+            if (index >= total_size) return false;
 
-/*
-                PROBLEM STATEMENT
+            if (dp[index][sum][sz] == false) return false;
 
-*/
+            if (sum >= original[index]) {
+                res.push_back(original[index]);
+                if (possible(index + 1, sum - original[index], sz - 1)) return true;
+                res.pop_back();
+            }
+            
+            if (possible(index + 1, sum, sz)) return true;
 
-#include <bits/stdc++.h>
-using namespace std;
-#include <chrono> 
-#ifndef mehul
-#pragma GCC optimize("Ofast")
-#endif
+            return dp[index][sum][sz] = false;
+        }
+    
+        vector<vector<int> > avgset(vector<int> &Vec) {
 
-typedef long long ll;
-typedef unordered_map<int, int> umapii;
-typedef unordered_map<int, bool> umapib;
-typedef unordered_map<string, int> umapsi;
-typedef unordered_map<string, string> umapss;
-typedef map<string, int> mapsi;
-typedef map<pair<int, int>, int> mappiii;
-typedef map<int, int> mapii;
-typedef pair<int, int> pii;
-typedef pair<long long, long long> pll;
-typedef unordered_set<int> useti;
+            /* 
+             * SUM_of_Set1 / size_of_set1 = SUM_of_Set2 / size_of_set2 
+             * SUM_of_Set1 = SUM_of_Set2 * (size_of_set1 / size_of_set2)
+             *
+             * total_sum = Sum_of_Set1 + Sum_of_Set2
+             * and size_of_set2 = total_size - size_of_set1 
+             *
+             * Sum_of_Set1 = (total_sum - Sum_of_Set1) * (size_of_set1 / (total_size - size_of_set1))
+             * OR on simplifying, 
+             *   total_sum / Sum_of_Set1 - 1 = (total_size - size_of_set1) / size_of_set1 
+             *   total_sum / Sum_of_Set1 = total_size / size_of_set1 
+             *   Sum_of_Set1 / size_of_set1 = total_sum / total_size 
+             *
+             *   Now we can just iterate on size_of_set1, and we would know the required Sum_of_Set1 
+             */
 
-#define debug(x) cout << '>' << #x << ':' << x << endl;
-#define uset unordered_set
-#define it iterator
-#define mp make_pair
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
-#define f first
-#define s second
+            sort(Vec.begin(), Vec.end());
+            original.clear();
+            original = Vec;
+            dp.clear();
+            res.clear();
 
-#define INF 4557430888798830399ll
-#define MOD 1000000007
-#define EPS 1e-7
-#define PI acos(-1)
+            int total_sum = 0;
+            total_size = Vec.size();
 
+            for(int i = 0; i < total_size; ++i)
+                total_sum += Vec[i];
+            
+            dp.resize(original.size(), vector<vector<bool> > (total_sum + 1, vector<bool> (total_size, true)));
 
-#define sz(x) (int)(x).size()
- 
-#define fr(i, a, b) for (int i = (a), _b = (b); i <= _b; i++)
-#define rep(i, n) for (int i = 0, _n = (n); i < _n; i++)
-#define repr(i, n) for (int i = n; i >= 0; i--)
-#define frr(i, a, b) for (int i = (a), _b = (b); i >= _b; i--)
-#define trav(a, x) for(auto& a : x)
-#define fil(ar, val) memset(ar, val, sizeof(ar))  // 0x3f for inf, 0x80 for -INF can also use with pairs
+            // We need to minimize size_of_set1. So, lets search for the first size_of_set1 which is possible. 
+            for (int i = 1; i < total_size; i++) {
+                // Sum_of_Set1 has to be an integer
+                if ((total_sum * i) % total_size != 0) continue;
+                int Sum_of_Set1 = (total_sum * i) / total_size;
+                if (possible(0, Sum_of_Set1, i)) {
 
-#ifdef mehul
-template<typename T>
-void __p(T a) { cout << a << " "; }
-template<typename T>
-void __p(std::vector<T> a) { cout << "{ "; for (auto p : a) __p(p); cout << "}"; }
-template<typename T, typename F>
-void __p(pair<T, F> a) { cout << "{ "; __p(a.first); __p(a.second); cout << "}"; }
-template<typename T, typename ...Arg>
-void __p(T a1, Arg ...a) { __p(a1); __p(a...); }
-template<typename Arg1>
-void __f(const char *name, Arg1 &&arg1) {
-	cout<<name<<" : ";__p(arg1);cout<<endl;
-}
-template<typename Arg1, typename ... Args>
-void __f(const char *names, Arg1 &&arg1, Args &&... args) {
-	int bracket=0,i=0;
-	for(; ;i++)
-		if(names[i]==','&&bracket==0)
-			break;
-		else if(names[i]=='(')
-			bracket++;
-		else if(names[i]==')')
-			bracket--;
-	const char *comma=names+i;
-	cout.write(names,comma-names)<<" : ";
-	__p(arg1);
-	cout<<"| ";
-	__f(comma+1,args...);
-}
-#define trace(...) cout<<"Line:"<<__LINE__<<" "; __f(#__VA_ARGS__, __VA_ARGS__)
-int begtime = clock();
-#define end_routine() cout << "\n\nTime elapsed: " << (clock() - begtime)*1000/CLOCKS_PER_SEC << " ms\n\n";
-#else
-#define endl '\n'
-#define trace(...)
-#define end_routine()
-#endif
+                    // Ok. Lets find out the elements in Vec, not in res, and return the result.
+                    int ptr1 = 0, ptr2 = 0;
+                    vector<int> res1 = res;
+                    vector<int> res2;
+                    while (ptr1 < Vec.size() || ptr2 < res.size()) {
+                        if (ptr2 < res.size() && res[ptr2] == Vec[ptr1]) {
+                            ptr1++;
+                            ptr2++;
+                            continue;
+                        }
+                        res2.push_back(Vec[ptr1]);
+                        ptr1++;
+                    }
 
-vector<vector<int> > avgset(vector<int> &A) {
-	sort(all(A));
-	int sum = 0;
-	int n = A.size();
-	rep(i, n){sum+=A[i];}
-	int lsize = (n)/2;
-	vector<vector<int>> temp;
-	vector<unordered_map<int, vector<int>>>dp(lsize+1);
-	dp[0][0] = {};
-	// trace(A);
-	rep(k, n){
-		frr(i, lsize, 1){
-			trav(b, dp[i-1]){
-				vector<int> temp = b.s;
-				temp.push_back(k);
-				int summm = b.f+A[k];
-				dp[i][summm] = temp;
-			}
-		}
-	}
-	trav(a, A){
-		
-	}
+                    vector<vector<int> > ans;
+                    ans.push_back(res1);
+                    ans.push_back(res2);
+                    return ans;
+                }
+            }
+            // Not possible.
+            vector<vector<int> > ans;
+            return ans;
+        }
 
-	// trace(lsize);
-	// trav(ele, dp[2]){
-	// 	trace(ele.f, ele.s);
-	// }
-	// return temp;
-	fr(i, 1, lsize){
-		int needSum = (sum*i)/n;
-		if (sum*i%n!=0)
-		{
-			continue;
-		}
-		rep(j, n){
-			int toLook = needSum-A[j];
-			if (dp[i-1].find(toLook)!=dp[i-1].end() && std::find(all(dp[i-1][toLook]), j)==dp[i-1][toLook].end())
-			{
-				vector<int> temp3 = dp[i-1][toLook];
-				trav(index, temp3){
-					index = A[index];
-				}
-				// trace(temp3, A[j]);
-				temp3.push_back(A[j]);
-				sort(all(temp3));
-				// trace(dp[i-1].f, dp[i]);
-				temp.push_back(temp3);
-				unordered_map<int, int> freq;
-				trav(el, A){
-					freq[el]++;
-				}
-				trav(el, temp3){
-					freq[el]--;
-				}
-				vector<int> temp4;
-				trav(el, A){
-					if (freq[el]>0)
-					{
-						temp4.push_back(el);
-						freq[el]--;
-					}
-				}
-				sort(all(temp4));
-				temp.push_back(temp4);
-				// return temp;
-			}
-		}
-	}
-	trav(elee, temp){
-		trace(elee);
-	}
-	if (temp.size()==0)
-	{
-		return temp;
-	}
-	vector<int> junk(A.size(), INT_MAX);
-	vector<int> junk2;
-	for (int i = 0; i < temp.size(); i=i+2)	
-	{
-		if (junk.size()>temp[i].size())
-		{
-			junk = temp[i];
-			junk2 = temp[i+1];
-		}else if (junk.size()==temp[i].size())
-		{
-			
-			rep(j, junk.size()){
-				if (junk[j]<temp[i][j])
-				{
-					break;
-				}
-				if (junk[j]>temp[i][j])
-				{
-					junk = temp[i];
-					junk2 = temp[i+1];
-					break;
-				}
-			}
-			
-		}
-	}
-	temp.clear();
-	temp.push_back(junk);
-	temp.push_back(junk2);
-	return temp;
-}
-
-
-int main( int argc , char ** argv )
-{
-	ios_base::sync_with_stdio(false) ; 
-	cin.tie(NULL) ; 
-	#ifdef mehul
-    freopen("input.txt", "r", stdin);
-	#endif
-
-	int n;
-	vector<int> v;
-	cin>>n;
-	rep(i, n){
-		int a;
-		cin>>a;
-		v.push_back(a);
-	}
-	vector<vector<int>> ans = avgset(v);
-	rep(i, ans.size()){
-		trace(ans[i]);
-	}
-
-	#ifdef mehul
-    end_routine();
-	#endif
- 
-    return 0 ; 
-}
-
+};
